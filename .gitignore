@@ -1,0 +1,7 @@
+*.csv
+*.tsv
+*.swp
+.kdev4/
+*.kdev4
+*.kate-swp
+*.directory
