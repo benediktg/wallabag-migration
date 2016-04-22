@@ -1,5 +1,6 @@
 *.csv
 *.tsv
+credentials.ini
 *.swp
 .kdev4/
 *.kdev4
