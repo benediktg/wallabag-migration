@@ -27,4 +27,9 @@ and execute
 ```bash
 ./post-articles.py sql.csv  # replace sql.csv by the actual CSV file name
 ```
-(This process might last quite a long time when you many articles so I'd recommend running it in a terminal multiplexer.)
+This process might last quite a long time when you many articles so I'd recommend running it in a terminal multiplexer. In my case it ended with
+```
+posted 1304 articles
+finished successfully.
+./post-articles.py wallabag.csv  55,81s user 3,38s system 0% cpu 2:19:34,25 total
+```
