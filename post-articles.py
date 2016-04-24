@@ -29,6 +29,7 @@ def main(args):
                 break
             else:
                 failCount += 1
+                printf('-')
                 token = getToken(hostname, payload)
                 article['access_token'] = token
         if failCount == 2:
