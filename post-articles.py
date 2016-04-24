@@ -37,6 +37,11 @@ def main(args):
 
 
 def extractCreds(config):
+    '''
+    reads the config file and
+    returns a tuple of the hostname (str)
+    and the API request payload (dict)
+    '''
     config = config.defaults()
     hostname = config['host']
     username = config['username']
@@ -50,6 +55,11 @@ def extractCreds(config):
 
 
 def getToken(hostname, payload):
+    '''
+    acquires an API token
+
+    returns str
+    '''
     r = requests.get('{}/oauth/v2/token'.format(hostname), payload)
     token = r.json().get('access_token')
     refresh = r.json().get('refresh_token')
@@ -59,6 +69,11 @@ def getToken(hostname, payload):
 
 
 def extractArticle(row, token):
+    '''
+    interprets a line of the CSV file
+
+    returns dict
+    '''
     url = row['url']
     isRead = int(row['is_read'])
     isFaved = int(row['is_fav'])
@@ -68,10 +83,20 @@ def extractArticle(row, token):
 
 
 def connectionFailed(response):
+    '''
+    checks if there was an error when connecting to the API
+
+    returns bool
+    '''
     return 'error' in response.json().keys()
 
 
 def printf(text):
+    '''
+    prints text without newline at the end
+
+    returns void
+    '''
     print(text, end='', flush=True)
 
 if __name__ == "__main__":
