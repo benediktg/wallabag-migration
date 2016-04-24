@@ -35,6 +35,7 @@ def main(args):
         if failCount == 2:
             print('\nConnection failed.\nAborting.')
             break
+    fp.close()
 
 
 def extractCreds(config):
