@@ -9,12 +9,16 @@ FROM `entries`
 WHERE `user_id` = 'N';  # replace N by your actual user ID
 ```
 After that you might need to convert the exported file from DOS to unix format with a command like
-```
+```bash
 dos2unix sql.csv
 ```
 and move it into the directory where the `post-articles.py` lies.
 
-To start the actual migration fill out the `credentials.ini` like
+To start the actual migration copy the `credentials.ini.txt` and fill out the `credentials.ini` like
+```bash
+cp credentials.ini.txt credentials.ini
+```
+
 ```ini
 [DEFAULT]
 host      = https://wallabag.example.org
