@@ -2,6 +2,7 @@
 
 import configparser
 import csv
+import itertools
 import requests
 import sys
 
@@ -15,7 +16,13 @@ def main(args):
     hostname, payload = extractCreds(config)
     token = getToken(hostname, payload)
 
-    fp = open(args[1], newline='')
+    csvFileName = args[1]
+
+    hasRequiredColumns = checkCsvFile(csvFileName)
+    if not hasRequiredColumns:
+        sys.exit('csv file does not have the required fields')
+
+    fp = open(csvFileName, newline='')
     reader = csv.DictReader(fp)
 
     global counter
@@ -70,6 +77,27 @@ def getToken(hostname, payload):
     payload['grant_type'] = 'refresh_token'
     payload['refresh_token'] = refresh
     return token
+
+
+def checkCsvFile(csvFileName):
+    '''
+    ensures that the CSV file has the right columns
+
+    returns bool
+    '''
+    with open(csvFileName, 'r') as f:
+        firstLine = f.readline().strip()
+
+    requiredFields = ['url', 'is_read', 'is_fav']
+    hasRequiredColumns = False
+
+    for l in itertools.permutations(requiredFields):
+        toMatch = '{},{},{}'.format(l[0], l[1], l[2])
+        doesMatch = (firstLine == toMatch)
+        if doesMatch:
+            hasRequiredColumns = True
+            break
+    return hasRequiredColumns
 
 
 def extractArticle(row, token):
