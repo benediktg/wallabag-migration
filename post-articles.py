@@ -21,7 +21,9 @@ def main(args):
 
     hasRequiredColumns = checkCsvFile(csvFileName)
     if not hasRequiredColumns:
-        sys.exit('csv file does not have the required fields')
+        sys.exit('''csv file does not have the required could
+    there should be:
+    `url`, `is_fav`, `is_read`''')
 
     fp = open(csvFileName, newline='')
     reader = csv.DictReader(fp)
@@ -37,15 +39,15 @@ def main(args):
                               verify=doVerify)
             if not connectionFailed(r):
                 counter += 1
+                printf('\b+')
                 break
             else:
                 failCount += 1
-                printf('-')
+                printf('\b-')
                 token = getToken(hostname, payload, doVerify)
                 article['access_token'] = token
         if failCount == 2:
-            print('\nConnection failed.\nAborting.')
-            break
+            sys.exit('\nConnection failed.')
     fp.close()
 
 
@@ -143,4 +145,4 @@ if __name__ == "__main__":
         main(sys.argv)
         print('\nposted {} articles\nfinished successfully.'.format(counter))
     except(KeyboardInterrupt):
-        print('\nposted {} articles\naborted.'.format(counter))
+        sys.exit('\nposted {} articles\naborted.'.format(counter))
