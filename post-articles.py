@@ -13,8 +13,9 @@ maxFailCount = 2
 def main(args):
     config = configparser.ConfigParser()
     config.read(credentialFileName)
-    hostname, payload = extractCreds(config)
-    token = getToken(hostname, payload)
+    hostname, payload, isSelfSigned = extractCreds(config)
+    doVerify = not isSelfSigned
+    token = getToken(hostname, payload, doVerify)
 
     csvFileName = args[1]
 
@@ -32,14 +33,15 @@ def main(args):
         while failCount < maxFailCount:
             article = extractArticle(row, token)
             printf('.')
-            r = requests.post('{}/api/entries.json'.format(hostname), article)
+            r = requests.post('{}/api/entries.json'.format(hostname), article,
+                              verify=doVerify)
             if not connectionFailed(r):
                 counter += 1
                 break
             else:
                 failCount += 1
                 printf('-')
-                token = getToken(hostname, payload)
+                token = getToken(hostname, payload, doVerify)
                 article['access_token'] = token
         if failCount == 2:
             print('\nConnection failed.\nAborting.')
@@ -52,6 +54,7 @@ def extractCreds(config):
     reads the config file and
     returns a tuple of the hostname (str)
     and the API request payload (dict)
+    and if the TLS cert is selfsigned (bool)
     '''
     config = config.defaults()
     hostname = config['host']
@@ -62,16 +65,20 @@ def extractCreds(config):
     payload = {'username': username, 'password': password,
                'client_id': clientid, 'client_secret': secret,
                'grant_type': 'password'}
-    return (hostname, payload)
+    isSelfSigned = False
+    if (config['selfsigned'] == 'True') or (config['selfsigned'] == 'true'):
+        isSelfSigned = True
+    return (hostname, payload, isSelfSigned)
 
 
-def getToken(hostname, payload):
+def getToken(hostname, payload, doVerify):
     '''
     acquires an API token
 
     returns str
     '''
-    r = requests.get('{}/oauth/v2/token'.format(hostname), payload)
+    r = requests.post('{}/oauth/v2/token'.format(hostname), payload,
+                      verify=doVerify)
     token = r.json().get('access_token')
     refresh = r.json().get('refresh_token')
     payload['grant_type'] = 'refresh_token'
