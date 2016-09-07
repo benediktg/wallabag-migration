@@ -21,13 +21,14 @@ cp credentials.ini.txt credentials.ini
 
 ```ini
 [DEFAULT]
-host      = https://wallabag.example.org
-username  = johndoe
-password  = s3cr3tp4ssw0rd
-client_id = 1_yaifiil7ooyaezohne9nei4azoopieshoo8eicae0moh2eumi
-c_secret  = iquohme5naehee7ieg6ohsh0uo3aghaik3kiephi9jequoodoc
+host       = https://wallabag.example.org
+username   = johndoe
+password   = s3cr3tp4ssw0rd
+client_id  = 1_yaifiil7ooyaezohne9nei4azoopieshoo8eicae0moh2eumi
+c_secret   = iquohme5naehee7ieg6ohsh0uo3aghaik3kiephi9jequoodoc
+selfsigned = False
 ```
-(you can get the client ID and secret by clicking on "developer" in your wallabag v2 and "create a new client" there) and execute
+(you can get the client ID and secret by clicking on "developer" in your wallabag v2 and "create a new client" there, `selfsigned` means if your TLS certificate is a self-signed one) and execute
 ```bash
 ./post-articles.py sql.csv  # replace sql.csv by the actual CSV file name
 ```
