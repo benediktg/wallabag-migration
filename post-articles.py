@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 
-import requests
 import configparser
 import csv
+import requests
 import sys
 
-counter = 0
+credentialFileName = 'credentials.ini'
+maxFailCount = 2
 
 
 def main(args):
     config = configparser.ConfigParser()
-    config.read('credentials.ini')
+    config.read(credentialFileName)
     hostname, payload = extractCreds(config)
     token = getToken(hostname, payload)
 
@@ -18,9 +19,10 @@ def main(args):
     reader = csv.DictReader(fp)
 
     global counter
+    counter = 0
     for row in reader:
         failCount = 0
-        while failCount < 2:
+        while failCount < maxFailCount:
             article = extractArticle(row, token)
             printf('.')
             r = requests.post('{}/api/entries.json'.format(hostname), article)
